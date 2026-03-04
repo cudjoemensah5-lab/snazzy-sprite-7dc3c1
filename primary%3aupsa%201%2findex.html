@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BGEC113 Exam Hub | HangOut Publications</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0}
+.screen{display:none;width:100%;flex-direction:column;align-items:center}
+.screen.active{display:flex}
+
+/* HUB */
+#screen-hub{background:linear-gradient(160deg,#0d1b3e 0%,#1a4d6e 40%,#0a3d2e 100%);min-height:100vh;padding:30px 20px;justify-content:center}
+.hub-inner{width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center}
+.top-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:30px;padding:6px 18px;color:#ffd89b;font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.upsa-logo{font-size:2.4rem;font-weight:900;color:#fff;letter-spacing:2px;text-align:center}
+.upsa-tag{font-size:.72rem;color:rgba(255,255,255,.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;text-align:center}
+.hub-title{color:#fff;text-align:center;font-size:1.45rem;font-weight:800;margin-bottom:6px}
+.hub-sub{color:rgba(255,255,255,.6);text-align:center;font-size:.85rem;margin-bottom:28px;line-height:1.6}
+.hub-cards{display:flex;flex-direction:column;gap:16px;width:100%}
+.hub-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:20px 22px;display:flex;align-items:center;gap:18px;cursor:pointer;transition:all .22s;-webkit-tap-highlight-color:transparent}
+.hub-card:active{transform:scale(.98);background:rgba(255,255,255,.14)}
+.hub-icon{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+.w1i{background:linear-gradient(135deg,#028090,#f5a623)}
+.w2i{background:linear-gradient(135deg,#0a3d2e,#028090)}
+.w3i{background:linear-gradient(135deg,#6c3483,#d35400)}
+.hub-info{flex:1}
+.hub-wlabel{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px}
+.hub-info h2{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:3px;line-height:1.3}
+.hub-info p{font-size:.73rem;color:rgba(255,255,255,.5);line-height:1.4}
+.hub-pills{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.hub-pill{background:rgba(255,255,255,.1);border-radius:20px;padding:2px 9px;font-size:.67rem;color:rgba(255,255,255,.6);font-weight:600}
+.hub-arrow{color:rgba(255,255,255,.35);font-size:1.4rem;flex-shrink:0}
+.info-bar{margin-top:24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 20px;width:100%;display:flex;justify-content:space-around}
+.info-item .val{color:#ffd89b;font-size:1.05rem;font-weight:800;text-align:center}
+.info-item .lbl{color:rgba(255,255,255,.4);font-size:.66rem;text-transform:uppercase;letter-spacing:.8px;text-align:center}
+.hub-footer{color:rgba(255,255,255,.3);font-size:.72rem;text-align:center;margin-top:22px;line-height:1.8}
+
+/* PASSWORD */
+#screen-pw{background:linear-gradient(160deg,#0d1b3e,#1a4d6e);min-height:100vh;padding:30px 20px;justify-content:center}
+.pw-card{background:#fff;border-radius:18px;padding:32px 26px;width:100%;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,.3);text-align:center}
+.pw-lock{font-size:2.8rem;margin-bottom:8px}
+.pw-card h2{font-size:1.2rem;font-weight:800;color:#1a2752;margin-bottom:6px}
+.pw-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:.72rem;font-weight:700;color:#fff;margin-bottom:14px}
+.pw-card p{color:#666;font-size:.83rem;margin-bottom:18px;line-height:1.5}
+.pw-error{color:#c0392b;font-size:.8rem;margin:-6px 0 10px;display:none;font-weight:600}
+.shake{animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.back-link{background:none;border:none;color:#999;font-size:.82rem;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;gap:4px;padding:0}
+
+/* REGISTRATION */
+#screen-reg{background:linear-gradient(160deg,#0d1b3e,#1a4d6e);min-height:100vh;padding:30px 20px;justify-content:center}
+.reg-card{background:#fff;border-radius:18px;padding:32px 26px;width:100%;max-width:460px;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.reg-card h2{font-size:1.2rem;font-weight:800;color:#1a2752;margin-bottom:6px}
+.reg-card p{color:#666;font-size:.83rem;margin-bottom:18px;line-height:1.5}
+
+/* SHARED */
+label{display:block;font-size:.83rem;font-weight:600;color:#333;margin-bottom:4px;text-align:left}
+input[type=text],input[type=password]{width:100%;padding:10px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:.93rem;margin-bottom:12px;outline:none;-webkit-appearance:none;transition:.2s}
+input:focus{border-color:#6c3483}
+.btn-main{display:block;width:100%;padding:14px;color:#fff;border:none;border-radius:10px;font-size:.97rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:4px;-webkit-appearance:none}
+.btn-main:active{opacity:.85}
+.w1c{background:linear-gradient(90deg,#1a2752,#028090)}
+.w2c{background:linear-gradient(90deg,#0a3d2e,#028090)}
+.w3c{background:linear-gradient(90deg,#1a2752,#6c3483)}
+
+/* EXAM */
+#screen-exam{padding:0 0 40px;min-height:100vh;max-width:700px}
+.sticky-bar{position:sticky;top:0;z-index:99;border-radius:0 0 14px 14px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;box-shadow:0 4px 18px rgba(0,0,0,.25);width:100%}
+.sinfo{color:#fff;font-size:.75rem;line-height:1.6}
+.sinfo span{color:#ffd89b;font-weight:700}
+.timer-box{font-weight:800;font-size:1rem;padding:6px 16px;border-radius:18px;background:#f5a623;color:#1a2752;white-space:nowrap}
+.timer-box.danger{background:#e74c3c;color:#fff;animation:pulse .7s infinite alternate}
+@keyframes pulse{from{opacity:1}to{opacity:.5}}
+.exam-body{width:100%;padding:0 16px}
+.q-card{background:#fff;border-radius:14px;padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.09)}
+.q-num{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.q-text{font-size:.92rem;color:#222;line-height:1.55;margin-bottom:12px;font-weight:600}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:8px;cursor:pointer;margin-bottom:6px;border:1.5px solid #eee;-webkit-tap-highlight-color:transparent;transition:.15s}
+.opt:active{background:#f5f5f5}
+.opt input[type=radio]{margin-top:3px;flex-shrink:0}
+.opt label{cursor:pointer;font-size:.87rem;color:#333;line-height:1.4}
+textarea.essay{width:100%;min-height:90px;padding:9px;border:1.5px solid #ddd;border-radius:8px;font-size:.87rem;resize:vertical;-webkit-appearance:none;font-family:'Segoe UI',sans-serif}
+textarea.essay:focus{outline:none;border-color:#6c3483}
+.submit-btn{color:#fff;border:none;border-radius:12px;padding:15px 36px;font-size:1rem;font-weight:700;cursor:pointer;display:block;margin:10px auto 10px;-webkit-appearance:none;transition:.2s}
+.submit-btn:active{opacity:.85}
+
+/* RESULT */
+#screen-result{padding:20px 16px 40px;min-height:100vh;max-width:680px}
+.res-card{background:#fff;border-radius:18px;padding:26px 22px;box-shadow:0 8px 30px rgba(0,0,0,.12);text-align:center;margin-bottom:14px;width:100%}
+.res-card h2{font-size:1.05rem;font-weight:800;color:#1a2752;margin-bottom:4px}
+.res-student{color:#888;font-size:.78rem;margin-bottom:10px;line-height:1.5}
+.grade-badge{font-size:4.5rem;font-weight:900;margin:8px 0}
+.grade-A{color:#1b7a3e}.grade-B{color:#028090}.grade-C{color:#f39c12}.grade-D{color:#e74c3c}
+.score-line{font-size:1.45rem;font-weight:700;color:#1a2752;margin-bottom:4px}
+.score-sub{font-size:.8rem;color:#888;margin-bottom:12px;line-height:1.5}
+.quote-box{border-radius:8px;padding:13px 16px;margin:10px 0;text-align:left}
+.quote-box p{font-style:italic;color:#444;font-size:.87rem;line-height:1.6}
+.quote-attr{font-size:.74rem;color:#aaa;margin-top:5px;font-weight:600}
+.breakdown{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 3px 14px rgba(0,0,0,.09);margin-bottom:14px;width:100%}
+.breakdown h3{font-size:.88rem;font-weight:700;color:#1a2752;margin-bottom:12px}
+.ans-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid #f2f2f2;font-size:.76rem;gap:8px}
+.ans-row:last-child{border:none}
+.ans-qt{color:#444;flex:1;line-height:1.4}
+.ctag{background:#d4efdf;color:#1b7a3e;padding:2px 8px;border-radius:10px;font-weight:700;font-size:.69rem;white-space:nowrap}
+.wtag{background:#fadbd8;color:#c0392b;padding:2px 8px;border-radius:10px;font-weight:700;font-size:.69rem;white-space:nowrap}
+.etag{background:#e8daef;color:#6c3483;padding:2px 8px;border-radius:10px;font-weight:700;font-size:.69rem;white-space:nowrap}
+.action-btns{display:flex;gap:10px;margin-bottom:12px;width:100%}
+.wa-btn{background:#25D366;color:#fff;border:none;padding:13px 16px;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;flex:1;-webkit-appearance:none}
+.gm-btn{background:#ea4335;color:#fff;border:none;padding:13px 16px;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;flex:1;-webkit-appearance:none}
+.home-btn{background:#1a2752;color:#fff;border:none;padding:13px;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;width:100%;-webkit-appearance:none;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<!-- ══ HUB ══ -->
+<div id="screen-hub" class="screen active">
+  <div class="hub-inner">
+    <div class="top-badge">🎓 2025/2026 Academic Year · First Semester</div>
+    <div class="upsa-logo">UPSA</div>
+    <div class="upsa-tag">Scholarship with Professionalism</div>
+    <div class="hub-title">BGEC113 Online Exam Portal</div>
+    <div class="hub-sub">Introduction to Environmental Management<br>Select your week's exam below to begin</div>
+    <div class="hub-cards">
+      <div class="hub-card" onclick="goToPw(1)">
+        <div class="hub-icon w1i">🌍</div>
+        <div class="hub-info">
+          <div class="hub-wlabel">Week 1</div>
+          <h2>Overview of the Environment</h2>
+          <p>Definitions, components, natural resources & biosphere</p>
+          <div class="hub-pills"><span class="hub-pill">35 Questions</span><span class="hub-pill">40 Min</span><span class="hub-pill">🔒 Password</span></div>
+        </div>
+        <div class="hub-arrow">›</div>
+      </div>
+      <div class="hub-card" onclick="goToPw(2)">
+        <div class="hub-icon w2i">🌿</div>
+        <div class="hub-info">
+          <div class="hub-wlabel">Week 2</div>
+          <h2>Ecosystems & Environment as an Asset</h2>
+          <p>Ecosystem types, MEA 2005 services, source & sink functions</p>
+          <div class="hub-pills"><span class="hub-pill">35 Questions</span><span class="hub-pill">40 Min</span><span class="hub-pill">🔒 Password</span></div>
+        </div>
+        <div class="hub-arrow">›</div>
+      </div>
+      <div class="hub-card" onclick="goToPw(3)">
+        <div class="hub-icon w3i">🏛️</div>
+        <div class="hub-info">
+          <div class="hub-wlabel">Week 3</div>
+          <h2>Environmental Management & Its Evolution</h2>
+          <p>EM definitions, framework, evolution, Ghana's EPA</p>
+          <div class="hub-pills"><span class="hub-pill">35 Questions</span><span class="hub-pill">40 Min</span><span class="hub-pill">🔒 Password</span></div>
+        </div>
+        <div class="hub-arrow">›</div>
+      </div>
+    </div>
+    <div class="info-bar">
+      <div class="info-item"><div class="val">3</div><div class="lbl">Exams</div></div>
+      <div class="info-item"><div class="val">105</div><div class="lbl">Questions</div></div>
+      <div class="info-item"><div class="val">40min</div><div class="lbl">Per Exam</div></div>
+      <div class="info-item"><div class="val">1</div><div class="lbl">Attempt</div></div>
+    </div>
+    <div class="hub-footer">HangOut Publications · UPSA &nbsp;|&nbsp; BGEC113 Introduction to Environmental Management</div>
+  </div>
+</div>
+
+<!-- ══ PASSWORD ══ -->
+<div id="screen-pw" class="screen">
+  <div class="pw-card" id="pw-card-el">
+    <button class="back-link" onclick="goHome()">‹ Back to Hub</button>
+    <div class="pw-lock">🔒</div>
+    <h2 id="pw-title">Week 1 Exam</h2>
+    <div id="pw-badge" class="pw-badge w1c">BGEC113</div>
+    <p>Enter the access password provided by your lecturer to unlock this exam.</p>
+    <input type="password" id="pw-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPw()"/>
+    <div id="pw-error" class="pw-error">❌ Incorrect password. Please try again.</div>
+    <button id="pw-btn" class="btn-main w1c" onclick="checkPw()">🔓 Unlock Exam</button>
+  </div>
+</div>
+
+<!-- ══ REGISTRATION ══ -->
+<div id="screen-reg" class="screen">
+  <div class="reg-card">
+    <button class="back-link" onclick="goHome()">‹ Back to Hub</button>
+    <h2 id="reg-title">🎓 Student Registration</h2>
+    <p>Fill in your details to begin the 40-minute timed exam. You have <strong>one attempt only</strong>.</p>
+    <label>Full Name</label>
+    <input type="text" id="s-name" placeholder="e.g. Kofi Mensah"/>
+    <label>Student ID</label>
+    <input type="text" id="s-id" placeholder="e.g. UPS/BA/23/0012"/>
+    <label>Programme</label>
+    <input type="text" id="s-prog" placeholder="e.g. BA Business Administration"/>
+    <button id="reg-btn" class="btn-main w1c" onclick="startExam()">🚀 Start Exam</button>
+  </div>
+</div>
+
+<!-- ══ EXAM ══ -->
+<div id="screen-exam" class="screen">
+  <div id="sticky-bar" class="sticky-bar w1c">
+    <div class="sinfo"><div>Student: <span id="bar-name">—</span></div><div>ID: <span id="bar-id">—</span></div></div>
+    <div id="timer-el" class="timer-box">40:00</div>
+    <div class="sinfo" style="text-align:right"><div>BGEC113</div><div id="bar-week">Week 1</div></div>
+  </div>
+  <div class="exam-body">
+    <div id="q-container"></div>
+    <button id="sub-btn" class="submit-btn w1c" onclick="submitExam(false)">✅ Submit Exam</button>
+  </div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div id="screen-result" class="screen">
+  <div class="res-card">
+    <h2 id="res-title">📊 Exam Results</h2>
+    <div class="res-student" id="res-student"></div>
+    <div class="grade-badge" id="res-grade"></div>
+    <div class="score-line" id="res-score"></div>
+    <div class="score-sub" id="res-sub"></div>
+    <div class="quote-box" id="quote-box">
+      <p id="quote-text"></p>
+      <div class="quote-attr">— HangOut Publications</div>
+    </div>
+  </div>
+  <div class="breakdown">
+    <h3>📋 Answer Breakdown</h3>
+    <div id="breakdown-list"></div>
+  </div>
+  <div class="action-btns">
+    <button class="wa-btn" onclick="sendWA()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.116 1.526 5.845L.057 23.552a.5.5 0 00.611.611l5.708-1.469A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.947 0-3.775-.5-5.363-1.376l-.386-.214-3.995 1.027 1.027-3.995-.214-.386A9.951 9.951 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      WhatsApp
+    </button>
+    <button class="gm-btn" onclick="sendGmail()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4C2.897 4 2 4.897 2 6v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm0 2v.511l-8 6.16-8-6.16V6h16zM4 18V9.044l7.386 5.688a1 1 0 001.228 0L20 9.044V18H4z"/></svg>
+      Gmail
+    </button>
+  </div>
+  <button class="home-btn" onclick="goHome()">🏠 Back to Exam Hub</button>
+</div>
+
+<script>
+const PW='Real Estate1';
+let currentWeek=1,studentName='',studentId='',studentProg='';
+let timerInterval=null,secondsLeft=2400,startTime=null,submitted=false;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+  const el=document.getElementById(id);
+  el.classList.add('active');el.style.display='flex';
+  window.scrollTo(0,0);
+}
+function goHome(){
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  submitted=false;secondsLeft=2400;
+  showScreen('screen-hub');
+}
+function goToPw(w){
+  currentWeek=w;
+  const titles={1:'Week 1 Exam – Overview of the Environment',2:'Week 2 Exam – Ecosystems & Environment as an Asset',3:'Week 3 Exam – Environmental Management & Its Evolution'};
+  const cls={1:'w1c',2:'w2c',3:'w3c'};
+  document.getElementById('pw-title').textContent=titles[w];
+  const badge=document.getElementById('pw-badge');badge.className='pw-badge '+cls[w];
+  document.getElementById('pw-btn').className='btn-main '+cls[w];
+  document.getElementById('pw-input').value='';
+  document.getElementById('pw-error').style.display='none';
+  showScreen('screen-pw');
+}
+function checkPw(){
+  const val=document.getElementById('pw-input').value;
+  const err=document.getElementById('pw-error');
+  const card=document.getElementById('pw-card-el');
+  if(val===PW){
+    const cls={1:'w1c',2:'w2c',3:'w3c'};
+    document.getElementById('reg-title').textContent='🎓 Student Registration — Week '+currentWeek;
+    document.getElementById('reg-btn').className='btn-main '+cls[currentWeek];
+    showScreen('screen-reg');
+  } else {
+    err.style.display='block';
+    card.classList.remove('shake');void card.offsetWidth;
+    card.classList.add('shake');
+    document.getElementById('pw-input').value='';
+    setTimeout(()=>card.classList.remove('shake'),400);
+  }
+}
+function startExam(){
+  studentName=document.getElementById('s-name').value.trim();
+  studentId=document.getElementById('s-id').value.trim();
+  studentProg=document.getElementById('s-prog').value.trim();
+  if(!studentName||!studentId||!studentProg){alert('Please fill in all fields.');return;}
+  const cls={1:'w1c',2:'w2c',3:'w3c'};
+  const bar=document.getElementById('sticky-bar');
+  bar.className='sticky-bar '+cls[currentWeek];
+  document.getElementById('bar-name').textContent=studentName;
+  document.getElementById('bar-id').textContent=studentId;
+  document.getElementById('bar-week').textContent='Week '+currentWeek+' Exam';
+  document.getElementById('sub-btn').className='submit-btn '+cls[currentWeek];
+  submitted=false;secondsLeft=2400;
+  buildQs();
+  showScreen('screen-exam');
+  startTime=Date.now();
+  timerInterval=setInterval(tick,1000);
+}
+function tick(){
+  secondsLeft--;
+  const m=Math.floor(secondsLeft/60),s=secondsLeft%60;
+  const el=document.getElementById('timer-el');
+  el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if(secondsLeft<=300)el.classList.add('danger');
+  if(secondsLeft<=0){clearInterval(timerInterval);submitExam(true);}
+}
+
+const QC={1:'#028090',2:'#0a6e3a',3:'#6c3483'};
+const QB={1:'#f0f9fa',2:'#eaf5ee',3:'#f6f0fb'};
+const QUOTES={
+  1:{A:"Excellent! You have demonstrated a thorough understanding of the environment and its components. The environment needs champions like you — keep leading the way!",B:"Well done! You have a strong grasp of environmental concepts. Keep building on this knowledge — just like a healthy ecosystem, your understanding will keep growing.",C:"Good effort! The environment is complex and so is mastering it. Review the areas you missed — even the mightiest rainforest started from a single seed.",D:"Don't give up! Every great environmental manager once struggled with the basics. Revisit the Week 1 content and come back stronger."},
+  2:{A:"Excellent work! You clearly understand how ecosystems sustain life on Earth. The environment needs champions like you who appreciate its value deeply.",B:"Well done! You have a strong grasp of ecosystems and environmental services. Keep nurturing that knowledge — just like a healthy ecosystem, it will keep growing.",C:"Good effort! Ecosystems are complex, and so is mastering them. Review the areas you missed — even the mightiest rainforest started from a single seed.",D:"Don't give up! Every great environmental manager once struggled with the basics. Revisit the Week 2 content and come back stronger."},
+  3:{A:"Outstanding! You have mastered the principles and evolution of environmental management. The world needs informed professionals like you to lead the charge for sustainable development.",B:"Well done! You have a solid understanding of environmental management and its evolution. Keep building on this foundation — every great policy starts with knowledge like yours.",C:"Good effort! Environmental management has a rich history and complex concepts. Review the milestones you missed — each step in the evolution has an important lesson for today.",D:"Don't give up! The evolution of environmental consciousness shows us that change takes time. Revisit Week 3 content and come back stronger."}
+};
+
+const Qs={
+1:[
+{type:'mcq',q:"According to Einstein, the environment is best defined as:",opts:["Everything that is man-made and surrounds us","Everything that isn't me","The physical surroundings of an organism","The natural and built components of the Earth"],ans:1},
+{type:'mcq',q:"Which definition describes the environment as 'the physical surroundings which include land (lithosphere), water (hydrosphere) and air (atmosphere)'?",opts:["Black's Law Dictionary","Bernie & Boyle","Cunningham & Saigo","Buchanan"],ans:1},
+{type:'mcq',q:"According to Cunningham & Saigo, the environment refers to:",opts:["Everything that surrounds and affects an organism during its lifetime","Only the natural world excluding human settlements","The socio-cultural components of human life","The combination of air, water and land only"],ans:0},
+{type:'mcq',q:"Black's Law Dictionary defines the environment as:",opts:["The totality of physical, economic, cultural, aesthetic and social circumstances which surround and affect the desirability and value of property and the quality of people's lives","Everything that surrounds and affects a living organism","The physical surroundings including land, water and air","The natural world as it exists without human interference"],ans:0},
+{type:'mcq',q:"The THREE main components of the environment are:",opts:["Biotic, abiotic, and cultural components","Natural, built, and socio-cultural components","Physical, chemical, and biological components","Land, water, and air components"],ans:1},
+{type:'mcq',q:"Which of the following is an example of the BUILT environment?",opts:["Forests and rivers","Roads, buildings, and infrastructure","Cultural traditions and social norms","Soil and mineral deposits"],ans:1},
+{type:'mcq',q:"The socio-cultural component of the environment refers to:",opts:["Man-made physical structures","Natural ecosystems and biodiversity","Human institutions, values, beliefs, traditions and social systems","The chemical composition of soil and water"],ans:2},
+{type:'mcq',q:"What percentage of the Earth's surface is covered by the hydrosphere?",opts:["29%","50%","71%","85%"],ans:2},
+{type:'mcq',q:"The lithosphere covers approximately what percentage of the Earth's surface?",opts:["10%","29%","50%","71%"],ans:1},
+{type:'mcq',q:"The atmosphere is described as:",opts:["A 50km envelope of gases surrounding the Earth","A 100km envelope of gases surrounding the Earth","A 200km envelope of gases surrounding the Earth","A 500km envelope of gases surrounding the Earth"],ans:1},
+{type:'mcq',q:"Natural resources are classified into TWO main categories based on their origin:",opts:["Renewable and non-renewable resources","Biotic and abiotic resources","Terrestrial and aquatic resources","Organic and inorganic resources"],ans:1},
+{type:'mcq',q:"Biotic natural resources are:",opts:["Resources derived from non-living matter such as minerals and water","Resources derived from living organisms such as forests, animals and fish","Resources that can be replenished naturally over time","Resources formed deep within the Earth over millions of years"],ans:1},
+{type:'mcq',q:"Which of the following is an example of an ABIOTIC natural resource?",opts:["Timber","Fish","Mineral deposits","Forests"],ans:2},
+{type:'mcq',q:"Renewable natural resources are best described as:",opts:["Resources that exist in fixed quantities and cannot be replaced once used","Resources that can be replenished naturally over time if not overexploited","Resources that are entirely man-made and recyclable","Resources found only in the ocean"],ans:1},
+{type:'mcq',q:"Which of the following is a NON-RENEWABLE resource?",opts:["Solar energy","Timber","Wind","Fossil fuels (oil and gas)"],ans:3},
+{type:'mcq',q:"Solar energy, wind energy and water (hydro) are examples of:",opts:["Non-renewable resources","Abiotic non-renewable resources","Renewable resources","Biotic resources"],ans:2},
+{type:'mcq',q:"The Earth's biosphere consists of THREE spheres. Which correctly identifies all three?",opts:["Atmosphere, stratosphere, and mesosphere","Hydrosphere, lithosphere, and atmosphere","Biosphere, geosphere, and ecosphere","Troposphere, lithosphere, and hydrosphere"],ans:1},
+{type:'mcq',q:"According to Buchanan, the environment is defined as:",opts:["Everything that surrounds and affects a living organism","All external conditions and factors that affect a living organism","The totality of physical, cultural and social circumstances affecting property value","The physical surroundings including land, water and air only"],ans:1},
+{type:'mcq',q:"Which of the following statements about the atmosphere is CORRECT?",opts:["The atmosphere is a 50km envelope of gases","The atmosphere contains only oxygen and nitrogen","The atmosphere is a 100km envelope of gases surrounding the Earth","The atmosphere covers 71% of the Earth's surface"],ans:2},
+{type:'mcq',q:"The natural environment component refers to:",opts:["Human-made structures and urban spaces","Naturally occurring features such as landforms, water bodies, soils, climate and living organisms","Social institutions and cultural traditions","Industrial and commercial infrastructure"],ans:1},
+{type:'mcq',q:"Which combination correctly pairs the resource type with an example?",opts:["Biotic + Renewable = Coal","Abiotic + Non-renewable = Mineral deposits","Biotic + Non-renewable = Forests","Abiotic + Renewable = Fish"],ans:1},
+{type:'mcq',q:"The concept of the environment being 'everything that isn't me' was proposed by:",opts:["Cunningham & Saigo","Black's Law Dictionary","Einstein","Buchanan"],ans:2},
+{type:'mcq',q:"Land degradation and desertification fall under which component of the environment?",opts:["Socio-cultural component","Built environment","Natural environment — specifically the lithosphere","Atmosphere"],ans:2},
+{type:'mcq',q:"Which BEST describes why the environment is important to mankind?",opts:["It provides only aesthetic value and scenic beauty","It provides raw materials, life-sustaining services, and absorbs waste through its sink function","It is important only for agricultural production","It is only relevant for developing nations"],ans:1},
+{type:'mcq',q:"Fish, forests, and agricultural land are examples of which category of natural resources?",opts:["Abiotic non-renewable resources","Abiotic renewable resources","Biotic renewable resources","Biotic non-renewable resources"],ans:2},
+{type:'essay',q:"Define the term 'environment' using at least THREE different scholarly definitions from the lecture. What common themes emerge from these definitions?"},
+{type:'essay',q:"Describe the THREE main components of the environment (natural, built, and socio-cultural). Give TWO examples of each component."},
+{type:'essay',q:"Explain the structure of the Earth's biosphere. In your answer, describe the hydrosphere, lithosphere, and atmosphere with relevant statistics."},
+{type:'essay',q:"Distinguish between biotic and abiotic natural resources. Give THREE examples of each and explain their importance to human development."},
+{type:'essay',q:"Explain the difference between renewable and non-renewable natural resources. Why is this distinction important for environmental management?"},
+{type:'essay',q:"Discuss how the built environment interacts with the natural environment. What are the potential negative consequences of an expanding built environment?"},
+{type:'essay',q:"Explain the socio-cultural component of the environment and discuss how human culture and social systems influence environmental decision-making."},
+{type:'essay',q:"Why is the environment considered an asset to mankind? Discuss the source function, life-sustaining services, and the sink function of the environment."},
+{type:'essay',q:"Using examples from Ghana, explain how both renewable and non-renewable natural resources contribute to the country's economic development."},
+{type:'essay',q:"Discuss the relationship between the three spheres of the Earth's biosphere and explain how human activities affect each sphere."}
+],
+2:[
+{type:'mcq',q:"According to the Millennium Ecosystem Assessment (2005), an ecosystem is best defined as:",opts:["A collection of animals living in the same forest","A dynamic complex of micro-organism, plant, animal and human communities and their non-living environment interacting as a functional unit","Only the biotic components of a natural habitat","A static system of plants and soil in a defined geographical area"],ans:1},
+{type:'mcq',q:"In an ecosystem, biotic and abiotic components are linked together through:",opts:["Migration patterns and seasonal cycles","Nutrient cycles and energy flows","Rainfall patterns and wind direction","Human economic activities"],ans:1},
+{type:'mcq',q:"Which of the following is a MAJOR abiotic factor in an ecosystem?",opts:["Predators","Decomposers","Sunlight","Producers"],ans:2},
+{type:'mcq',q:"Oxygen is an important abiotic factor because:",opts:["It is used only by plants for photosynthesis","It is necessary for cellular respiration, though certain bacteria are killed by it","It determines the colour of soil","It regulates the migration patterns of animals"],ans:1},
+{type:'mcq',q:"Biotic factors in an ecosystem are categorized into three groups. Which correctly lists all three?",opts:["Producers, consumers, and decomposers","Plants, animals, and microbes","Autotrophs, heterotrophs, and saprotrophs","Both A and C are correct"],ans:3},
+{type:'mcq',q:"Producers (autotrophs) make their food through photosynthesis using THREE inputs. Which are they?",opts:["Oxygen, water, and minerals","Sunlight, carbon dioxide, and water","Nitrogen, phosphorus, and water","Glucose, oxygen, and sunlight"],ans:1},
+{type:'mcq',q:"Primary consumers (herbivores) are animals that:",opts:["Eat only other animals","Eat both plants and animals","Eat only plants","Break down dead organic matter"],ans:2},
+{type:'mcq',q:"Which of the following is an example of a SECONDARY consumer (carnivore)?",opts:["Grasshopper","Cow","Tiger","Bear"],ans:2},
+{type:'mcq',q:"Tertiary consumers (omnivores) are organisms that eat:",opts:["Only plants","Only animals","Both plants and animals","Dead organic matter only"],ans:2},
+{type:'mcq',q:"Decomposers (saprotrophs) are important primarily because they:",opts:["Produce food through photosynthesis","Break down dead plants and animal remains, recycling nutrients back to the soil","Eat other animals and control population","Migrate between ecosystems spreading seeds"],ans:1},
+{type:'mcq',q:"A 'habitat' within an ecosystem refers to:",opts:["The food that an organism eats","The physical area in which an organism lives","The relationship between predator and prey","The seasonal migration pattern of animals"],ans:1},
+{type:'mcq',q:"An ecotone is best described as:",opts:["A type of aquatic ecosystem","A transition zone between two adjoining ecosystems where organisms from both may be present","A deep ocean habitat","A type of grassland biome"],ans:1},
+{type:'mcq',q:"Ecosystems are generally classified into which TWO main categories?",opts:["Biotic and abiotic ecosystems","Forest and marine ecosystems","Terrestrial (land-based) and aquatic (water-based) ecosystems","Urban and rural ecosystems"],ans:2},
+{type:'mcq',q:"Which of the following is NOT a type of forest ecosystem under terrestrial ecosystems?",opts:["Arctic and Alpine Forest (Tundra)","Coniferous Forest (Taiga)","Deciduous Forest","Estuarine Forest"],ans:3},
+{type:'mcq',q:"A Tropical Rainforest ecosystem is characterized by annual rainfall of:",opts:["Less than 25cm","25–85cm","200–250cm","More than 500cm"],ans:2},
+{type:'mcq',q:"Desert ecosystems cover approximately what percentage of the planet?",opts:["5%","10%","18%","30%"],ans:2},
+{type:'mcq',q:"An agro-ecosystem is best described as:",opts:["A natural undisturbed tropical rainforest","A natural system modified by humans for agricultural production","A saltwater coral reef ecosystem","A tundra ecosystem in arctic regions"],ans:1},
+{type:'mcq',q:"Aquatic ecosystems can be divided into freshwater, salt water, and:",opts:["Desert ecosystems","Agro-ecosystems","Estuarine ecosystems (mixture of salt and freshwater)","Urban ecosystems"],ans:2},
+{type:'mcq',q:"According to the MEA (2005), ecosystem services are defined as:",opts:["The monetary value of forests","The benefits derived from ecosystems to humanity","The scientific study of ecological systems","The management plans for protected areas"],ans:1},
+{type:'mcq',q:"The MEA (2005) categorizes ecosystem services into FOUR types. Which correctly lists all four?",opts:["Food, water, energy, and minerals","Provisioning, regulating, supporting, and cultural services","Biotic, abiotic, renewable, and non-renewable services","Source, sink, life-support, and economic services"],ans:1},
+{type:'mcq',q:"Which of the following is an example of a PROVISIONING ecosystem service?",opts:["Climate regulation","Flood prevention","Medicinal resources and food","Recreational and eco-tourism"],ans:2},
+{type:'mcq',q:"Pollination and biological pest control are examples of which type of ecosystem service?",opts:["Provisioning services","Regulating services","Supporting services","Cultural services"],ans:1},
+{type:'mcq',q:"Soil formation, nutrient cycling, and photosynthesis are classified as:",opts:["Provisioning services","Regulating services","Supporting services","Cultural services"],ans:2},
+{type:'mcq',q:"The environment's 'sink function' refers to its:",opts:["Ability to produce raw materials for human use","Capacity to store resources for future generations","Inherent natural ability to receive and process waste within its assimilative capacity","Role in providing spiritual and recreational benefits"],ans:2},
+{type:'mcq',q:"The environment's SOURCE function is best described as:",opts:["The environment's ability to absorb waste","The environment as a source of raw materials including renewable and non-renewable resources","The environment's capacity to regulate climate","The environment's role in cultural and spiritual life"],ans:1},
+{type:'essay',q:"Define the term 'ecosystem' as used in the Millennium Ecosystem Assessment (2005) and explain the role of biotic and abiotic components."},
+{type:'essay',q:"Explain any FOUR major abiotic factors of an ecosystem and describe how each affects the organisms living within it."},
+{type:'essay',q:"Distinguish between producers (autotrophs), consumers (heterotrophs), and decomposers (saprotrophs). Give TWO examples of each."},
+{type:'essay',q:"Using the concept of the food chain, trace the flow of energy from producers to tertiary consumers, explaining the role of each trophic level."},
+{type:'essay',q:"Explain the concept of an ecotone. Why is the transition zone between two ecosystems significant for biodiversity?"},
+{type:'essay',q:"Compare and contrast TERRESTRIAL and AQUATIC ecosystems. List at least THREE sub-types of each and describe one in detail."},
+{type:'essay',q:"Using the MEA (2005) framework, explain the FOUR categories of ecosystem services with TWO examples under each category."},
+{type:'essay',q:"Explain why the environment should be regarded as an economic ASSET. Discuss the source function, life-sustaining services, and the sink function."},
+{type:'essay',q:"Describe the Grassland Ecosystem and the Desert Ecosystem. What climatic conditions characterise each and what organisms are dominant?"},
+{type:'essay',q:"Explain what estuarine ecosystems are and why they are ecologically important. Use the concept of the transition zone to support your answer."}
+],
+3:[
+{type:'mcq',q:"According to Bartol & Martin (1998), management is best defined as:",opts:["The coordination of natural resources to achieve environmental goals","The process of achieving organizational goals by engaging in the four major functions of planning, organizing, leading and controlling","The monitoring and evaluation of environmental performance by regulators","The enforcement of environmental laws and policies by government agencies"],ans:1},
+{type:'mcq',q:"Management involves the coordination of resources often referred to as the 'four Ms'. Which correctly lists them?",opts:["Maps, Models, Methods and Metrics","Men, Machines, Materials and Money","Markets, Management, Monitoring and Measurement","Minerals, Microbes, Matter and Media"],ans:1},
+{type:'mcq',q:"Why is there no single concise universal definition of Environmental Management (EM)?",opts:["Because EM is a new field with little research","Due to the broad scope and diversity of specialisms involved","Because governments disagree on what the environment means","Due to lack of international cooperation in the field"],ans:1},
+{type:'mcq',q:"According to Sharratt (1995), Environmental Management is defined as:",opts:["The control of pollution only in industrial areas","The management of the environmental performance of organizations, bodies and companies","The planning and conservation of national parks and reserves","The measurement of carbon emissions from factories"],ans:1},
+{type:'mcq',q:"Which definition of EM states it is 'a decision making process which regulates the impact of human activities on the environment so that the capacity to sustain human development will not be impaired'?",opts:["Bartol & Martin (1998)","Sharratt (1995)","One of several broader definitions of EM from the lecture","The Brundtland Report (1987)"],ans:2},
+{type:'mcq',q:"The general comprehensive definition of EM describes THREE outcomes organizations aim to achieve. Which correctly lists all three?",opts:["Economic growth, poverty reduction, and industrial expansion","Maintenance or improvement of environmental quality, provision of environmental services, and conservation of natural resources and ecosystems","Reduction of carbon emissions, protection of biodiversity, and promotion of tourism","Building environmental ministries, creating laws, and training officers"],ans:1},
+{type:'mcq',q:"According to the EM framework, environmental problems are addressed through how many overlapping steps?",opts:["Three","Four","Five","Seven"],ans:2},
+{type:'mcq',q:"Which is the FIRST step in the Framework for Environmental Management?",opts:["Implementing and enforcing environmental policies","Evaluating how the system works in terms of effectiveness and efficiency","Formulating environmental policies, by-laws, rules, strategies and actions","Recognizing and prioritizing environmental problems"],ans:3},
+{type:'mcq',q:"'Appropriate environmental management' is achieved when:",opts:["Industries maximize profits by exploiting natural resources","Resources are used efficiently for human development and conserved due to their role in sustaining the ecosystem","Governments impose strict fines on all polluting companies","Environmental staff take sole responsibility for environmental performance"],ans:1},
+{type:'mcq',q:"'Inappropriate environmental management' is described as:",opts:["Managing the environment using too many consultants","The misuse of resources by over-utilizing or under-utilizing them, and not conserving those resources that form the basis for ecological functioning","Using outdated environmental laws","Failing to establish an environmental ministry"],ans:1},
+{type:'mcq',q:"Which correctly describes the state of environmental consciousness between the 1960s and 1970s?",opts:["All developing countries had strong environmental laws","The voice of environmental concern emerged in industrialized nations, and environmental concerns were regarded as western luxuries","UNEP was established and took charge of global governance","The Rio Earth Summit produced the first international environmental declaration"],ans:1},
+{type:'mcq',q:"The 1972 Stockholm Conference on Human Environment was significant because:",opts:["It was the first conference to discuss climate change","It was the 1st major Global Environmental Conference bringing industrialized and developing nations together, with the message that environment and development are integrated","It established the Kyoto Protocol","It produced Agenda 21"],ans:1},
+{type:'mcq',q:"How many countries signed the declaration at the 1972 Stockholm Conference?",opts:["45","60","72","100"],ans:2},
+{type:'mcq',q:"Two major outcomes of the 1972 Stockholm Conference were:",opts:["The signing of the Kyoto Protocol and the creation of the SDGs","Many countries establishing Environmental Ministries and the establishment of UNEP","The creation of the World Bank Environment Fund and Rio+20","The formation of the African Union and the signing of the Paris Agreement"],ans:1},
+{type:'mcq',q:"In what year was UNEP established?",opts:["1972","1975","1980","1987"],ans:1},
+{type:'mcq',q:"The WCED 1987 Brundtland Report was significant primarily because it:",opts:["Established UNEP and set up environmental ministries worldwide","Popularized the concept of Sustainable Development and developed guiding principles for it","Produced Agenda 21 with 115 chapters","Led to the Rio+10 summit in Johannesburg"],ans:1},
+{type:'mcq',q:"The Rio Earth Summit of 1992 produced Agenda 21. How many chapters does it contain and what is its heavy focus?",opts:["50 chapters focused on climate change","75 chapters focused on industrial pollution","115 chapters with a heavy focus on poverty reduction","200 chapters focused on ocean conservation"],ans:2},
+{type:'mcq',q:"Rio+10 (Earth Summit 2002) was held in which city and country?",opts:["Rio de Janeiro, Brazil","New York, United States","Stockholm, Sweden","Johannesburg, South Africa"],ans:3},
+{type:'mcq',q:"World Environment Day is celebrated on which date every year?",opts:["22nd April","16th September","5th June","21st March"],ans:2},
+{type:'mcq',q:"Ghana's EPA was established under which Act and in which year?",opts:["EPA Act 239 of 1974","NRC Decree 490 of 1975","EPA Act 490 of 1994","Environmental Management Act 123 of 2000"],ans:2},
+{type:'mcq',q:"What was the name of Ghana's earlier environmental body established in 1974 under NRC Decree 239?",opts:["Ghana Environment Service (GES)","Environmental Protection Commission (EPC)","National Environmental Council (NEC)","Natural Resources Commission (NRC)"],ans:1},
+{type:'mcq',q:"Which statement best describes the evolution in thinking about environment and economic development?",opts:["The environment is still seen as a constraint to growth in all nations","The initial perception that the environment constrains growth is changing into the awareness that sustainable development can only occur when we respect ecosystem functions","Leading companies now avoid environmental issues to reduce costs","Governments have fully replaced businesses as the main actors in EM"],ans:1},
+{type:'mcq',q:"One of the lessons from the evolution of environmental consciousness is that environmental problems:",opts:["Only affect developing countries","Are caused solely by industrial activities in wealthy nations","Have global ramifications even though the causes may be local, and have socio-economic implications","Can only be solved through national legislation"],ans:2},
+{type:'mcq',q:"Which of the following is stated as an importance of managing the environment in relation to disasters?",opts:["Disaster management has nothing to do with environmental management","Disaster management as part of EM helps identify and study causes and effects of disasters and allows early warning systems to be put in place","Only the military can manage environmental disasters","Environmental management increases the frequency of natural disasters"],ans:1},
+{type:'mcq',q:"Which international protocol is cited as an example of managing gas emissions into the atmosphere?",opts:["The Paris Agreement","The Montreal Protocol","The Kyoto Protocol","The Stockholm Convention"],ans:2},
+{type:'essay',q:"Define Environmental Management (EM) using at least TWO definitions from the lecture. Explain why there is no single universal definition of EM."},
+{type:'essay',q:"Describe the five overlapping steps in the Framework for Environmental Management, explaining the purpose of each step."},
+{type:'essay',q:"Distinguish between 'appropriate environmental management' and 'inappropriate environmental management'. Give examples to support your answer."},
+{type:'essay',q:"Trace the evolution of environmental consciousness at the international level from the pre-1960s to Rio+20 (2012), highlighting the significance of each major milestone."},
+{type:'essay',q:"Discuss the significance of the 1972 Stockholm Conference on Human Environment and explain its key outcomes for global environmental governance."},
+{type:'essay',q:"Explain the role of the WCED Brundtland Report (1987) and the Rio Earth Summit (1992) in advancing the concept of Sustainable Development."},
+{type:'essay',q:"Describe the evolution of environmental consciousness in Ghana, discussing the roles of the EPC (1974) and the EPA (1994) in the country's environmental governance."},
+{type:'essay',q:"Discuss the goals of Environmental Management as presented in the lecture. Why are these goals important for sustainable human development?"},
+{type:'essay',q:"Explain why it is important to manage the environment. Discuss at least FOUR reasons including human health, resource availability, governmental influence, and population growth."},
+{type:'essay',q:"Discuss the future trends in Environmental Management. How are businesses in advanced countries responding differently to environmental issues compared to those in developing countries?"}
+]
+};
+
+function buildQs(){
+  const qs=Qs[currentWeek];
+  const c=document.getElementById('q-container');c.innerHTML='';
+  qs.forEach((q,i)=>{
+    const card=document.createElement('div');card.className='q-card';
+    const sec=i<25?'Objectives (MCQ)':'Theory';
+    card.innerHTML=`<div class="q-num" style="color:${QC[currentWeek]}">Question ${i+1} of ${qs.length} &nbsp;|&nbsp; ${sec}</div><div class="q-text">${q.q}</div>`;
+    if(q.type==='mcq'){
+      q.opts.forEach((opt,j)=>{
+        const row=document.createElement('div');row.className='opt';
+        row.innerHTML=`<input type="radio" name="q${i}" id="q${i}o${j}" value="${j}" style="accent-color:${QC[currentWeek]}"><label for="q${i}o${j}">${String.fromCharCode(65+j)}. ${opt}</label>`;
+        card.appendChild(row);
+      });
+    } else {
+      const ta=document.createElement('textarea');
+      ta.className='essay';ta.id='essay'+i;ta.placeholder='Type your answer here…';
+      card.appendChild(ta);
+    }
+    c.appendChild(card);
+  });
+}
+
+function submitExam(auto){
+  if(submitted)return;
+  if(!auto&&!confirm('Are you sure you want to submit? This cannot be undone.'))return;
+  submitted=true;clearInterval(timerInterval);
+  const qs=Qs[currentWeek];
+  const elapsed=Math.round((Date.now()-startTime)/1000);
+  const mm=Math.floor(elapsed/60),ss=elapsed%60;
+  const timeUsed=String(mm).padStart(2,'0')+'m '+String(ss).padStart(2,'0')+'s';
+  let correct=0,wrong=[];const breakdown=[];
+  qs.forEach((q,i)=>{
+    if(q.type==='mcq'){
+      const sel=document.querySelector(`input[name="q${i}"]:checked`);
+      const chosen=sel?parseInt(sel.value):-1;const ok=chosen===q.ans;
+      if(ok)correct++;else wrong.push(i+1);
+      breakdown.push({num:i+1,type:'mcq',text:q.q,correct:ok,ans:q.ans});
+    } else {
+      breakdown.push({num:i+1,type:'essay',text:q.q});
+    }
+  });
+  const pct=Math.round((correct/25)*100);
+  let grade='D';if(pct>=80)grade='A';else if(pct>=70)grade='B';else if(pct>=60)grade='C';
+  const wt={1:'Week 1 – Overview of the Environment',2:'Week 2 – Ecosystems & Environment as an Asset',3:'Week 3 – Environmental Management & Its Evolution'};
+  document.getElementById('res-title').textContent='📊 '+wt[currentWeek];
+  document.getElementById('res-student').textContent=studentName+' | '+studentId+' | '+studentProg;
+  const gEl=document.getElementById('res-grade');gEl.textContent=grade;gEl.className='grade-badge grade-'+grade;
+  document.getElementById('res-score').textContent=correct+' / 25 ('+pct+'%)';
+  document.getElementById('res-sub').textContent='Time used: '+timeUsed+' | Theory questions are assessed separately by your lecturer.';
+  document.getElementById('quote-text').textContent=QUOTES[currentWeek][grade];
+  const qb=document.getElementById('quote-box');qb.style.background=QB[currentWeek];qb.style.borderLeft='4px solid '+QC[currentWeek];
+  const bl=document.getElementById('breakdown-list');bl.innerHTML='';
+  breakdown.forEach(b=>{
+    const row=document.createElement('div');row.className='ans-row';
+    if(b.type==='mcq'){
+      const tag=b.correct?'<span class="ctag">✓ Correct</span>':'<span class="wtag">✗ Wrong ('+String.fromCharCode(65+b.ans)+')</span>';
+      row.innerHTML='<span class="ans-qt"><strong>Q'+b.num+':</strong> '+b.text.substring(0,72)+'…</span>'+tag;
+    } else {
+      row.innerHTML='<span class="ans-qt"><strong>Q'+b.num+' (Theory):</strong> '+b.text.substring(0,72)+'…</span><span class="etag">📝 Submitted</span>';
+    }
+    bl.appendChild(row);
+  });
+  window._res={studentName,studentId,studentProg,grade,correct,pct,timeUsed,wrong,week:currentWeek};
+  showScreen('screen-result');
+}
+
+function sendWA(){
+  const r=window._res;if(!r)return;
+  const wl=r.wrong.length?r.wrong.join(', '):'None';
+  const em={1:'🌍',2:'🌿',3:'🏛️'}[r.week];
+  const msg=em+' *BGEC113 – Week '+r.week+' Exam Result*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Name:* '+r.studentName+'\n🆔 *Student ID:* '+r.studentId+'\n🎓 *Programme:* '+r.studentProg+'\n⏱ *Time Used:* '+r.timeUsed+'\n━━━━━━━━━━━━━━━━━━━━\n📊 *Score:* '+r.correct+'/25 ('+r.pct+'%)\n🏅 *Grade:* '+r.grade+'\n❌ *Wrong Questions:* '+wl+'\n━━━━━━━━━━━━━━━━━━━━\n_Powered by HangOut Publications · UPSA_';
+  window.open('https://wa.me/233531548864?text='+encodeURIComponent(msg),'_blank');
+}
+function sendGmail(){
+  const r=window._res;if(!r)return;
+  const wl=r.wrong.length?r.wrong.join(', '):'None';
+  const sub='BGEC113 Week '+r.week+' Exam Result – '+r.studentName+' ('+r.studentId+')';
+  const body='BGEC113 – Week '+r.week+' Exam Result\n\nName: '+r.studentName+'\nStudent ID: '+r.studentId+'\nProgramme: '+r.studentProg+'\nTime Used: '+r.timeUsed+'\n\nScore: '+r.correct+'/25 ('+r.pct+'%)\nGrade: '+r.grade+'\nWrong Questions (MCQ): '+wl+'\n\nNote: Theory questions (Q26–Q35) are submitted for lecturer assessment.\n\nPowered by HangOut Publications · UPSA';
+  window.open('https://mail.google.com/mail/?view=cm&to=cudjoemensah5%40gmail.com&su='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body),'_blank');
+}
+</script>
+</body>
+</html>
